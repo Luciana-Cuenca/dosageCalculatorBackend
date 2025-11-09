@@ -47,10 +47,10 @@ public class MedicineController {
         return medicineRepository.findById(id).map(m -> {
             m.setName(medicine.getName());
             m.setDescription(medicine.getDescription());
-            m.setDosageMin(medicine.getDosageMin());
-            m.setDosageMax(medicine.getDosageMax());
-            m.setConcentration(medicine.getConcentration());
-            m.setMaxDosePerDose(medicine.getMaxDosePerDose()); // ← ESTA LINEA IMPORTANTE
+            m.setMgKgDay(medicine.getMgKgDay());
+            m.setDosesPerDay(medicine.getDosesPerDay());
+            m.setConcentrationMg(medicine.getConcentrationMg());
+            m.setConcentrationMl(medicine.getConcentrationMl()); // 
             return ResponseEntity.ok(medicineRepository.save(m));
         }).orElse(ResponseEntity.notFound().build());
     }
