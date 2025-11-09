@@ -30,6 +30,18 @@ public class Medicine {
     @Column(nullable = false)
     private Double concentrationMl; // ml
 
+    @Column(name = "min_age_months")
+    private Integer minAgeMonths;
+
+    @Column(name = "max_age_months")
+    private Integer maxAgeMonths;
+
+    @Column(name = "min_safe_ml")
+    private Double minSafeMl;
+
+    @Column(name = "max_safe_ml")
+    private Double maxSafeMl;
+
     // getters & setters
     public Long getId() { return id; }
 
@@ -50,4 +62,17 @@ public class Medicine {
 
     public Double getConcentrationMl() { return concentrationMl; }
     public void setConcentrationMl(Double concentrationMl) { this.concentrationMl = concentrationMl; }
+
+    public Integer getMinAgeMonths() { return minAgeMonths; }
+    public void setMinAgeMonths(Integer minAgeMonths) { this.minAgeMonths = minAgeMonths; }
+
+    public Integer getMaxAgeMonths() { return maxAgeMonths; }
+    public void setMaxAgeMonths(Integer maxAgeMonths) { this.maxAgeMonths = maxAgeMonths; }
+
+    public Double getMinSafeMl() { return minSafeMl; }
+    public void setMinSafeMl(Double minSafeMl) { this.minSafeMl = minSafeMl; }
+
+    public Double getMaxSafeMl() { return maxSafeMl; }
+    public void setMaxSafeMl(Double maxSafeMl) { this.maxSafeMl = maxSafeMl; }
+
 }
