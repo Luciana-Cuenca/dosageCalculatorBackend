@@ -20,18 +20,17 @@ public class CalculatorController {
     @PostMapping("/dose")
     public ResponseEntity<?> calculate(@RequestBody DoseRequest request) {
         try {
-            // Pasamos tanto años como meses
+            // Pasamos peso y concentraciones opcionales
             DoseResponse response = calculatorService.calculateDose(
                     request.getMedicineName(),
                     request.getWeightKg(),
-                    request.getAgeYears(),
-                    request.getAgeMonths()
+                    request.getUserConcentrationMg(),
+                    request.getUserConcentrationMl()
             );
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
-}
-
+    }
 }
