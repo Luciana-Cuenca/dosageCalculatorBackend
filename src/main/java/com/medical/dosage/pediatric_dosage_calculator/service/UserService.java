@@ -22,30 +22,30 @@ public class UserService {
     }
 
 
-    //register a new user - registra un nuevo usuario
+    //registra un nuevo usuario
     public User registerUser(User user){
 
-        //check if the email is already registered - comprueba si el correo ya esta registrado
+        //comprueba si el correo ya esta registrado
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("el correo ya esta registrado");
         }
 
         user.setRol(Rol.USER);
 
-        //encrypt the paswords before save it
+        //encripta la contaseña antes de guardarla
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        //save it in the db - lo guarda en la db
+        //lo guarda en la db
         return userRepository.save(user);
         
     }
 
-    //search by username - busca por nombre del usuario
+    //busca por username
     public Optional <User> findByUsername(String username){
         return userRepository.findByUsername(username);
     }
 
-    //search by email - busca por email
+    //busca por email
     public boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
@@ -55,12 +55,12 @@ public class UserService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            //compare the password encrypt one - compara la contaseña con la encriptada
+            //compara la contaseña con la encriptada
             return passwordEncoder.matches(password, user.getPassword());
             
         }
 
-        return false; // the user don't exist - el usuario no exixte
+        return false; //el usuario no exixte :b
 
     }
 

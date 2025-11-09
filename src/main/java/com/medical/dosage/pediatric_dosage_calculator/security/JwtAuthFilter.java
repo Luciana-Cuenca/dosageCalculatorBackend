@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.getUsernameFromToken(token);
             } catch (Exception e) {
-                // invalid token; continue without setting security context
+                //token invalido 
             }
         }
 

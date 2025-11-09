@@ -62,7 +62,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            // si pasa la autenticacion, generar token
+            // si pasa la autenticacion generar token
             String token = jwtUtil.generateToken(username);
             return ResponseEntity.ok(Map.of(
                     "message", "inicio de sesion exitoso",

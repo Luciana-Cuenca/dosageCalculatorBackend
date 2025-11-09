@@ -22,7 +22,7 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        // Use secret bytes directly; en prod usa un secreto de 256+ bits
+        //usa bytes secreta
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 

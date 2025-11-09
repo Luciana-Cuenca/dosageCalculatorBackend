@@ -25,11 +25,11 @@ public class CalculatorController {
             Double weightKg = Double.valueOf(payload.get("weightKg").toString());
 
             var medicineOpt = medicineRepository.findByName(medicineName);
-            if (medicineOpt.isEmpty()) return ResponseEntity.badRequest().body("Medicamento no encontrado");
+            if (medicineOpt.isEmpty()) return ResponseEntity.badRequest().body("Medicine not found");
 
             var medicine = medicineOpt.get();
 
-            // mg máximo por día
+            // max mg por dia
             Double maxMgDay = medicine.getDosageMax() * weightKg;
 
             // extraer concentración -> "250mg/5ml"
@@ -37,26 +37,26 @@ public class CalculatorController {
             String[] parts = c.split("mg/");
             double mg = Double.valueOf(parts[0]);
             double ml = Double.valueOf(parts[1].replace("ml", ""));
-            double mgPorMl = mg / ml;
+            double mgPerMl = mg / ml;
 
-            double maxPerDose = medicine.getMaxDosePerDose(); // mg máx por toma
+            double maxPerDose = medicine.getMaxDosePerDose(); // max mg por dosis
 
-            List<Map<String, Object>> opciones = new ArrayList<>();
+            List<Map<String, Object>> options = new ArrayList<>();
 
-            int[] intervalos = {12, 8, 6};
+            int[] intervals = {12, 8, 6};
 
-            for (int horas : intervalos) {
-                int tomasDia = 24 / horas;
-                double mgPorToma = maxMgDay / tomasDia;
+            for (int hours : intervals) {
+                int dosesPerDay = 24 / hours;
+                double mgPerDose = maxMgDay / dosesPerDay;
 
-                if (mgPorToma <= maxPerDose) {
-                    double mlPorToma = mgPorToma / mgPorMl;
+                if (mgPerDose <= maxPerDose) {
+                    double mlPerDose = mgPerDose / mgPerMl;
 
-                    opciones.add(Map.of(
-                            "cadaHoras", horas,
-                            "tomasPorDia", tomasDia,
-                            "mgPorToma", mgPorToma,
-                            "mlPorToma", mlPorToma
+                    options.add(Map.of(
+                            "everyHours", hours,
+                            "dosesPerDay", dosesPerDay,
+                            "mgPerDose", mgPerDose,
+                            "mlPerDose", mlPerDose
                     ));
                 }
             }
@@ -65,7 +65,7 @@ public class CalculatorController {
                     "medicine", medicineName,
                     "weightKg", weightKg,
                     "maxMgDay", maxMgDay,
-                    "opcionesSeguras", opciones
+                    "safeOptions", options
             ));
 
         } catch (Exception e) {
