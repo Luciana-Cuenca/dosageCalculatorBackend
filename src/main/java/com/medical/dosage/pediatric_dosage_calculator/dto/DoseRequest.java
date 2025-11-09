@@ -2,20 +2,22 @@ package com.medical.dosage.pediatric_dosage_calculator.dto;
 
 public class DoseRequest {
     private String medicineName;
-    private double weightkg;
-    private int ageMonths;
-    private int ageYears;
+    private double weightKg;
 
-    //Getters y swetter
-    public String getMedicineName() {return medicineName;}
-    public void setMedicineName(String medicineName) {this.medicineName = medicineName;}
+    // Concentración opcional ingresada por el usuario
+    private Double userConcentrationMg;
+    private Double userConcentrationMl;
 
-    public double getWeightKg() {return weightkg;}
-    public void setWeightKg(double weightKg) {this.weightkg = weightKg;}
+    // Getters y setters
+    public String getMedicineName() { return medicineName; }
+    public void setMedicineName(String medicineName) { this.medicineName = medicineName; }
 
-    public int getAgeMonths() { return ageMonths; }
-    public void setAgeMonths(int ageMonths) { this.ageMonths = ageMonths;}
+    public double getWeightKg() { return weightKg; }
+    public void setWeightKg(double weightKg) { this.weightKg = weightKg; }
 
-     public int getAgeYears() { return ageYears; }
-    public void setAgeYears(int ageYears) { this.ageYears = ageYears;}
+    public Double getUserConcentrationMg() { return userConcentrationMg; }
+    public void setUserConcentrationMg(Double userConcentrationMg) { this.userConcentrationMg = userConcentrationMg; }
+
+    public Double getUserConcentrationMl() { return userConcentrationMl; }
+    public void setUserConcentrationMl(Double userConcentrationMl) { this.userConcentrationMl = userConcentrationMl; }
 }
