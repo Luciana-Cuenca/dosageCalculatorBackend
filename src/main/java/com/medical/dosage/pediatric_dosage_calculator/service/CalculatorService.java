@@ -3,8 +3,6 @@ package com.medical.dosage.pediatric_dosage_calculator.service;
 import com.medical.dosage.pediatric_dosage_calculator.dto.DoseResponse;
 import com.medical.dosage.pediatric_dosage_calculator.model.Medicine;
 import com.medical.dosage.pediatric_dosage_calculator.repository.MedicineRepository;
-import com.medical.dosage.pediatric_dosage_calculator.strategy.DoseCalculatorStrategy;
-import com.medical.dosage.pediatric_dosage_calculator.strategy.WeightBasedDoseCalculator;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,57 +11,55 @@ import java.util.Optional;
 public class CalculatorService {
 
     private final MedicineRepository medicineRepository;
-    private final DoseCalculatorStrategy calculatorStrategy;
 
     public CalculatorService(MedicineRepository medicineRepository) {
         this.medicineRepository = medicineRepository;
-        this.calculatorStrategy = new WeightBasedDoseCalculator();
     }
 
-    public DoseResponse calculateDose(String medicineName, double weightKg, int ageYears, int ageMonths) throws Exception {
+    public DoseResponse calculateDose(String medicineName, double weightKg, Double userConcentrationMg, Double userConcentrationMl) throws Exception {
+        if (weightKg <= 0) throw new Exception("El peso debe ser mayor que 0");
+
         Optional<Medicine> medicineOpt = medicineRepository.findByName(medicineName);
-        if (medicineOpt.isEmpty())
-            throw new Exception("Medicine not found");
+        if (medicineOpt.isEmpty()) throw new Exception("Medicine not found");
 
         Medicine m = medicineOpt.get();
 
-        int totalAgeMonths = ageYears * 12 + ageMonths;
+        // Concentración final a usar
+        double concentrationMg = (userConcentrationMg != null) ? userConcentrationMg : m.getConcentrationMg();
+        double concentrationMl = (userConcentrationMl != null) ? userConcentrationMl : m.getConcentrationMl();
 
-        // Validacion de edad AIEPI
-        String alert = "";
-        if (m.getMinAgeMonths() != null && totalAgeMonths < m.getMinAgeMonths()) {
-            alert += "Paciente demasiado joven. ";
-        }
-        if (m.getMaxAgeMonths() != null && totalAgeMonths > m.getMaxAgeMonths()) {
-            alert += "Paciente demasiado mayor. ";
-        }
+        // Cálculo mg/día = mg/kg/día * peso
+        double mgPerDay = m.getMgKgDay() * weightKg;
 
-        double mgPerDay = calculatorStrategy.calculateMgPerDay(m, weightKg);
+        // mg por dosis
         double mgPerDose = mgPerDay / m.getDosesPerDay();
-        double mgPerMl = m.getConcentrationMg() / m.getConcentrationMl();
+
+        // ml por dosis según concentración
+        double mgPerMl = concentrationMg / concentrationMl;
         double mlPerDose = mgPerDose / mgPerMl;
 
-        // Alertas de dosis segura
+        // Alertas
+        String alert = "";
         if (mlPerDose < m.getMinSafeMl()) alert += "Dosis por debajo del rango seguro. ";
         if (mlPerDose > m.getMaxSafeMl()) alert += "Dosis por encima del rango seguro. ";
+        if (alert.isEmpty()) alert = "Dentro del rango seguro";
 
         String safeRange = m.getMinSafeMl() + " - " + m.getMaxSafeMl() + " ml";
 
         return new DoseResponse(
                 medicineName,
                 weightKg,
-                totalAgeMonths,
                 round(mgPerDay, 2),
                 m.getDosesPerDay(),
                 round(mgPerDose, 2),
                 round(mlPerDose, 2),
-                alert.isEmpty() ? "Dentro del rango seguro" : alert.trim(),
+                alert,
                 safeRange
         );
     }
 
     private static double round(double v, int places) {
-        double f = Math.pow(10, places);
-        return Math.round(v * f) / f;
+        double factor = Math.pow(10, places);
+        return Math.round(v * factor) / factor;
     }
 }
