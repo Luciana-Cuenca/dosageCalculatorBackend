@@ -45,8 +45,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/medicines").authenticated()          // GET listado → cualquier rol con login
-                .requestMatchers("/api/medicines/{id}").authenticated()     // GET por id → cualquier rol con login
+                .requestMatchers("/api/medicines").authenticated()          // GET listado cualquier rol con login
+                .requestMatchers("/api/medicines/{id}").authenticated()     // GET por id cualquier rol con login
                 .requestMatchers("/api/medicines/**").hasAuthority("ADMIN") // POST/PUT/DELETE → solo admin
                 .requestMatchers("/api/calculator/**").authenticated() // permiso para calculadora (cualquier usuario)
                 .requestMatchers("/api/ai/**").authenticated() // permiso para IA (cualquier usuario)

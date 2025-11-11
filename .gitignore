@@ -11,11 +11,10 @@
 
 
 # Archivos de configuración sensibles
-/src/main/resources/application.properties
-/src/main/resources/application-*.properties
 .env
 *.secret
-
+/.env
+/secret-*.json
 
 # Logs
 *.log
