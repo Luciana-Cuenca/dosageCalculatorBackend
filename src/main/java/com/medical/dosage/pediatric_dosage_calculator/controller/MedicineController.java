@@ -3,6 +3,7 @@ package com.medical.dosage.pediatric_dosage_calculator.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.medical.dosage.pediatric_dosage_calculator.dto.MedicineRequest;
 import com.medical.dosage.pediatric_dosage_calculator.model.Medicine;
 import com.medical.dosage.pediatric_dosage_calculator.repository.MedicineRepository;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/medicines")
@@ -37,20 +40,31 @@ public class MedicineController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Medicine create(@RequestBody Medicine medicine){
+    public Medicine create(@Valid @RequestBody MedicineRequest request){
+        Medicine medicine = new Medicine();
+        medicine.setName(request.getName());
+        medicine.setDescription(request.getDescription());
+        medicine.setMgKgDay(request.getMgKgDay());
+        medicine.setDosesPerDay(request.getDosesPerDay());
+        medicine.setConcentrationMg(request.getConcentrationMg());
+        medicine.setConcentrationMl(request.getConcentrationMl());
+        medicine.setMinSafeMl(request.getMinSafeMl());
+        medicine.setMaxSafeMl(request.getMaxSafeMl());
         return medicineRepository.save(medicine);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Medicine> update(@PathVariable Long id, @RequestBody Medicine medicine){
+    public ResponseEntity<Medicine> update(@PathVariable Long id, @Valid @RequestBody MedicineRequest request){
         return medicineRepository.findById(id).map(m -> {
-            m.setName(medicine.getName());
-            m.setDescription(medicine.getDescription());
-            m.setMgKgDay(medicine.getMgKgDay());
-            m.setDosesPerDay(medicine.getDosesPerDay());
-            m.setConcentrationMg(medicine.getConcentrationMg());
-            m.setConcentrationMl(medicine.getConcentrationMl()); // 
+            m.setName(request.getName());
+            m.setDescription(request.getDescription());
+            m.setMgKgDay(request.getMgKgDay());
+            m.setDosesPerDay(request.getDosesPerDay());
+            m.setConcentrationMg(request.getConcentrationMg());
+            m.setConcentrationMl(request.getConcentrationMl());
+            m.setMinSafeMl(request.getMinSafeMl());
+            m.setMaxSafeMl(request.getMaxSafeMl());
             return ResponseEntity.ok(medicineRepository.save(m));
         }).orElse(ResponseEntity.notFound().build());
     }
