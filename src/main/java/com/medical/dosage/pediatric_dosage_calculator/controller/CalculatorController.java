@@ -1,10 +1,13 @@
 package com.medical.dosage.pediatric_dosage_calculator.controller;
 
+import com.medical.dosage.pediatric_dosage_calculator.dto.DoseHistoryResponse;
 import com.medical.dosage.pediatric_dosage_calculator.dto.DoseRequest;
 import com.medical.dosage.pediatric_dosage_calculator.dto.DoseResponse;
 import com.medical.dosage.pediatric_dosage_calculator.service.CalculatorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/calculator")
@@ -29,6 +32,16 @@ public class CalculatorController {
             );
 
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getHistory() {
+        try {
+            List<DoseHistoryResponse> history = calculatorService.getCurrentUserHistory();
+            return ResponseEntity.ok(history);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
